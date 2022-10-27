@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TripsContext from "./TripsContext";
 
 const TRIP1 = {
@@ -41,6 +41,13 @@ const TRIP1 = {
 
 const TripsContextProvider = (props) => {
   const [trips, setTrips] = useState([TRIP1, TRIP2])
+
+  useEffect(() => {
+    fetch('http://localhost:4000' + "/trips")
+  .then((response) => response.json())
+  .then ((data) => setTrips(date))
+  .then((data) => console.log(data));
+  })
 
   return (
     <TripsContext.Provider value={{ trips, setTrips }}>
