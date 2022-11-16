@@ -1,20 +1,12 @@
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  Container,
-  List,
-  ListItem,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import OverviewTrips from "./OverviewTrips/OverviewTrips";
-import { useContext } from "react";
+import { Box, Button, Container, Stack, Text } from "@chakra-ui/react";
+import OverviewTrips from "./SingleTripOverview/SingleTripOverview";
+import React, { useContext } from "react";
 import TripsContext from "../../store/TripsContext";
 import { Link } from "react-router-dom";
 
-const Trips = () => {
-  const { trips, setTrips } = useContext(TripsContext);
+const Trips: React.FC = () => {
+  const { trips } = useContext(TripsContext);
 
   return (
     <Box display="flex" width="100%" height="100vh">
@@ -40,10 +32,11 @@ const Trips = () => {
 
         <Container>
           {trips.map((trip) => {
-            return(
-            <Link to={`/trips/${trip.id}`}>
-              <OverviewTrips key={trip} trip={trip} />{" "}
-            </Link>)
+            return (
+              <Link to={`/trips/${trip._id}`}>
+                <OverviewTrips key={trip._id} trip={trip} />{" "}
+              </Link>
+            );
           })}
         </Container>
 

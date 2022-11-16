@@ -1,8 +1,9 @@
+import React from "react";
 import "./App.css";
-import TripPage from "./components/Trip/TripPage";
+import TripPage from "./components/Trip/TripPage.tsx";
 import { Routes, Route } from "react-router";
-import TripsContextProvider from "./store/TripsContextProvider";
-import Trips from "./components/AddTrip/Trips";
+import TripsContextProvider from "./store/TripsContextProvider.tsx";
+import Trips from "./components/AddTrip/Trips.tsx";
 
 function App() {
   return (
