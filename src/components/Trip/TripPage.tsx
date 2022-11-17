@@ -1,20 +1,29 @@
 import React, { useContext, useState } from "react";
-import {
-  List,
-  ListItem,
-  ListIcon,
-  Box,
-  Button,
-  Center,
-  Stack,
-  Text,
-  Input,
-} from "@chakra-ui/react";
-import { CheckIcon } from "@chakra-ui/icons";
-import { AspectRatio } from "@chakra-ui/react";
 import TripsContext from "../../store/TripsContext";
 import Trip from "../../types/Trip";
 import { useParams } from "react-router-dom";
+import "@fontsource/roboto/300.css";
+// import { Alert } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+// import { ThemeProvider } from "@mui/material/styles";
+// import { green } from "@mui/material/colors";
+
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import ImageIcon from "@mui/icons-material/Image";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Container } from "@mui/system";
+import { format } from "date-fns";
+
+// import { Typography } from "@mui/material";
 
 const TripPage = () => {
   const { tripId } = useParams();
@@ -23,15 +32,10 @@ const TripPage = () => {
 
   const [trip, setTrip] = useState<Trip>(openedTrip);
 
-  // const trip = trips.find(({ _id }) => _id === tripId);
-
   const [cityName, setCityNameStopChanged] = useState("");
-  const [newDate, setNewDateChanged] = useState("");
-  // const [setTripNameChanged] = useState("");
+  const [newDate, setNewDateChanged] = React.useState(new Date());
 
   const nameTripChangeHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
-    // setTripNameChanged(event.target.value);
     setTrip({
       ...trip,
       name: event.target.value,
@@ -43,14 +47,14 @@ const TripPage = () => {
   ) => {
     setCityNameStopChanged(event.target.value);
   };
-  const newDateChangeHandle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewDateChanged(event.target.value);
-  };
+  const newDateChangeHandle = (updatedDate: string | null) => {
+    console.log(updatedDate as any);
+    if (updatedDate !== null) {
+      setNewDateChanged(new Date(updatedDate));
+    }
 
-  // const handleSubmit = (event) => {
-  //   event.prevenDefault();
-  //   console.log("Submit done");
-  // };
+    // setNewDateChanged(event.target.value);
+  };
 
   const AddStopHandle = () => {
     setTrip({
@@ -59,106 +63,117 @@ const TripPage = () => {
         ...trip.stops,
         {
           city: cityName,
-          date: newDate,
+          date: newDate.toISOString(),
         },
       ],
     });
+    // console.log("helloooooo");
   };
 
   return (
-    <Center py={6}>
-      <Box
-        maxW={"330px"}
-        w={"full"}
-        boxShadow={"2xl"}
-        rounded={"md"}
-        overflow={"hidden"}
-      >
-        <Stack textAlign={"center"} p={6} align={"center"}>
-          <Text
-            fontSize={"sm"}
-            fontWeight={500}
-            p={2}
-            px={3}
-            color={"green.500"}
-            rounded={"full"}
-          >
-            Travel planner
-          </Text>
+    <Container>
+      <Box width="100%">
+        <Stack
+          spacing={2}
+          alignItems="center"
+          border-radius="1px"
+          borderColor="green"
+          color="green"
+        >
+          <h4>Travel planner</h4>
+
           <Stack
-            direction={"row"}
-            align={"center"}
-            justify={"center"}
-            borderColor={"transparent"}
+            spacing={1}
+            // alignItems="Center"
+            margin="40px"
+            width="90%"
+
+            // direction={"row"}
+            // align={"center"}
+            // justify={"center"}
+            // borderColor={"transparent"}
           >
-            <Input
-              fontSize={"3xl"}
-              fontWeight={650}
-              value={trip.name}
+            <TextField
+              value={trip?.name}
               onChange={nameTripChangeHandle}
-              focusBorderColor="green.500"
+              InputProps={{
+                inputProps: {
+                  style: { textAlign: "center" },
+                },
+              }}
             />
           </Stack>
         </Stack>
-        <AspectRatio borderRadius="lg" ratio={16 / 9}>
+
+        <Box
+          width="100%"
+          borderRadius={20}
+          marginTop="20px"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          // overflow="hidden"
+        >
           <iframe
             title="myMap"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.952912260219!2d3.375295414770757!3d6.5276316452784755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng!4v1567723392506!5m2!1sen!2sng"
           />
-        </AspectRatio>
+        </Box>
 
-        <Box px={6} py={10}>
-          <List spacing={3}>
-            {trip.stops?.map((stop, index) => {
-              // Alternative:
-              // return JSON.stringify(stop);
+        <Box px={2} py={2}>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              paddingBottom: "2px",
+            }}
+          >
+            {trip?.stops?.map((stop, index) => {
               return (
                 <ListItem key={index}>
-                  <Box display="flex">
-                    <ListIcon as={CheckIcon} color="green.400" />
-                    <Text fontWeight="semibold"> {stop.city}</Text>
-                  </Box>
-                  <Text>date: {stop.date}</Text>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ImageIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={stop.city}
+                    secondary={format(new Date(stop.date), "MM/dd/yyyy")}
+                  />
                 </ListItem>
               );
             })}
           </List>
 
-          <Box mt={16}>
-            {/* <Form onSubmit={handleSubmit}> */}
-            <Input
-              border="1px"
-              borderColor="gray.200"
-              type="text"
-              value={cityName}
-              onChange={cityNameStopChangeHandle}
-              placeholder="Name of the stop"
-            />
-            {/* </Form> */}
-            <Input type="date" value={newDate} onChange={newDateChangeHandle} />
-            <Button
-              border="1px"
-              borderColor="gray.200"
-              onClick={AddStopHandle}
-              mt={2}
-              w={"full"}
-              bg={"green.400"}
-              color={"white"}
-              rounded={"xl"}
-              boxShadow={"0 5px 20px 0px rgb(72 187 120 / 43%)"}
-              _hover={{
-                bg: "green.500",
-              }}
-              _focus={{
-                bg: "green.500",
-              }}
-            >
-              Add the new stop
+          <Stack mt={3} spacing={2}>
+            <Stack spacing={3} margin-top="20px">
+              <TextField
+                label="Enter the city name"
+                value={cityName}
+                onChange={cityNameStopChangeHandle}
+                InputProps={{
+                  readOnly: false,
+                }}
+              />
+            </Stack>
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Date"
+                value={format(new Date(newDate), "MM/dd/yyyy")}
+                onChange={newDateChangeHandle}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <Button variant="contained" color="success" onClick={AddStopHandle}>
+              Add the new stop 2
             </Button>
-          </Box>
+          </Stack>
         </Box>
       </Box>
-    </Center>
+    </Container>
   );
 };
 

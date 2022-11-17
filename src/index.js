@@ -5,15 +5,27 @@ import App from "./App.js";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { green } from "@mui/material/colors";
+
+const innerTheme = createTheme({
+  palette: {
+    primary: {
+      main: green[500],
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ThemeProvider theme={innerTheme}>
+      {/* <ChakraProvider> */}
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </ChakraProvider>
+      {/* </ChakraProvider> */}
+    </ThemeProvider>
   </React.StrictMode>
 );
 
